@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#FAFAFA" />
+    <script>
+      (function () {
+        var tema = null;
+        try { tema = localStorage.getItem('tema-dashboard'); } catch (e) { /* sin almacenamiento */ }
+        if (tema !== 'claro' && tema !== 'oscuro') tema = matchMedia('(prefers-color-scheme: dark)').matches ? 'oscuro' : 'claro';
+        document.documentElement.dataset.tema = tema;
+      })();
+    </script>
+    <title>Monitoreo Acuícola</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M3 16c5-8 14-9 20-3l6-4v14l-6-4c-6 6-15 5-20-3z' fill='%233B82F6'/%3E%3C/svg%3E" />
+    <script type="module" crossorigin src="/assets/index-CY3SF_EG.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-DmppoFxI.css">
+  </head>
+  <body>
+    <div id="raiz"></div>
+  </body>
+</html>

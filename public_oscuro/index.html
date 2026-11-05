@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Monitoreo Acuícola</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.1/i18n/langES.js"></script>
+</head>
+<body>
+  <header id="banner" class="banner" data-nivel="sin_datos" role="status" aria-live="polite">
+    <div class="banner__estado">
+      <span class="banner__icono" id="banner-icono" aria-hidden="true">…</span>
+      <div>
+        <p class="banner__rotulo">Estado general del estanque</p>
+        <h1 class="banner__nivel" id="banner-nivel">Cargando…</h1>
+        <p class="banner__detalle" id="banner-detalle"></p>
+      </div>
+    </div>
+    <dl class="banner__datos">
+      <div>
+        <dt>Última medición</dt>
+        <dd id="banner-hora">—</dd>
+        <dd class="tenue" id="banner-antiguedad"></dd>
+      </div>
+      <div>
+        <dt>Conexión</dt>
+        <dd class="conexion" id="conexion" data-estado="conectando"><span class="punto" aria-hidden="true"></span><span id="conexion-texto">Conectando…</span></dd>
+        <dd class="tenue" id="conexion-hora"></dd>
+      </div>
+    </dl>
+  </header>
+
+  <div class="barra" role="toolbar" aria-label="Filtros">
+    <label class="campo">Nodo
+      <select id="filtro-nodo"><option value="todos">Todos los nodos</option></select>
+    </label>
+    <label class="campo">Rango
+      <select id="filtro-rango">
+        <option value="1h">Última 1 hora</option>
+        <option value="6h">Últimas 6 horas</option>
+        <option value="24h" selected>Últimas 24 horas</option>
+        <option value="7d">Últimos 7 días</option>
+        <option value="ultimos">24 h hasta la última medición</option>
+        <option value="personalizado">Personalizado…</option>
+      </select>
+    </label>
+    <div class="personalizado" id="rango-personalizado" hidden>
+      <label class="campo">Desde <input type="datetime-local" id="filtro-desde"></label>
+      <label class="campo">Hasta <input type="datetime-local" id="filtro-hasta"></label>
+      <button type="button" class="boton" id="aplicar-rango">Aplicar</button>
+    </div>
+    <div class="barra__acciones">
+      <button type="button" class="boton" id="refrescar">↻ Refrescar</button>
+      <a class="boton" id="descargar-csv" href="/api/export.csv" download>↓ Descargar CSV</a>
+    </div>
+  </div>
+
+  <p class="aviso" id="aviso" hidden></p>
+
+  <nav class="pestanas" role="tablist" aria-label="Secciones">
+    <button role="tab" data-pestana="resumen" aria-selected="true">Resumen</button>
+    <button role="tab" data-pestana="variables" aria-selected="false">Variables</button>
+    <button role="tab" data-pestana="alertas" aria-selected="false">Alertas</button>
+    <button role="tab" data-pestana="historico" aria-selected="false">Histórico</button>
+    <button role="tab" data-pestana="nodos" aria-selected="false">Nodos</button>
+  </nav>
+
+  <main>
+    <!-- RESUMEN -->
+    <section class="panel" id="panel-resumen" role="tabpanel">
+      <div class="rejilla rejilla--nodos" id="tarjetas-nodos"></div>
+
+      <h2 class="seccion">Lecturas actuales</h2>
+      <div class="rejilla rejilla--gauges" id="gauges"></div>
+
+      <div class="rejilla rejilla--2-1">
+        <article class="tarjeta">
+          <h3>Línea de tiempo del estado por nodo</h3>
+          <div class="leyenda-estado">
+            <span data-nivel="normal">✅ Normal</span>
+            <span data-nivel="advertencia">⚠️ Advertencia</span>
+            <span data-nivel="critica">🚨 Crítica</span>
+            <span class="tenue">Vacío: sin datos</span>
+          </div>
+          <div class="lienzo lienzo--corto" id="g-linea-tiempo"></div>
+        </article>
+        <article class="tarjeta">
+          <h3>Distribución de severidades</h3>
+          <p class="nota">Estado general en cada medición del rango</p>
+          <div class="lienzo lienzo--corto" id="g-donut"></div>
+        </article>
+      </div>
+    </section>
+
+    <!-- VARIABLES -->
+    <section class="panel" id="panel-variables" role="tabpanel" hidden>
+      <p class="nota" id="nota-promedio" hidden></p>
+      <div class="rejilla rejilla--lineas" id="lineas"></div>
+
+      <article class="tarjeta">
+        <h3>Comparativa entre nodos</h3>
+        <p class="nota">Cada nodo mide variables distintas, así que cada uno tiene su propio panel y escala. El tiempo y el zoom son compartidos.</p>
+        <div class="controles">
+          <label class="campo">Nodo 1 <select id="comparar-a"></select></label>
+          <label class="campo">Nodo 2 <select id="comparar-b"></select></label>
+        </div>
+        <div class="lienzo lienzo--alto" id="g-comparativa"></div>
+      </article>
+    </section>
+
+    <!-- ALERTAS -->
+    <section class="panel" id="panel-alertas" role="tabpanel" hidden>
+      <div class="cifras" id="cifras-alertas"></div>
+      <div class="rejilla rejilla--3">
+        <article class="tarjeta">
+          <h3>Alertas por variable y nodo</h3>
+          <div class="lienzo" id="g-alertas-barras"></div>
+        </article>
+        <article class="tarjeta">
+          <h3>Lecturas anormales por variable</h3>
+          <p class="nota">Porcentaje de las lecturas válidas del rango</p>
+          <div class="lienzo" id="g-pct-anormal"></div>
+        </article>
+        <article class="tarjeta">
+          <h3>Distribución de severidades</h3>
+          <p class="nota">Estado general en cada medición del rango</p>
+          <div class="lienzo" id="g-donut-alertas"></div>
+        </article>
+      </div>
+
+      <article class="tarjeta">
+        <h3>Alertas recientes</h3>
+        <p class="nota" id="nota-alertas"></p>
+        <div class="tabla-marco tabla-marco--limitada">
+          <table>
+            <thead><tr><th>Fecha y hora</th><th>Nodo</th><th>Variable</th><th class="num">Valor</th><th>Severidad</th></tr></thead>
+            <tbody id="tabla-alertas"></tbody>
+          </table>
+        </div>
+      </article>
+
+      <article class="tarjeta">
+        <h3>Eventos registrados en la base de datos</h3>
+        <p class="nota">Tabla <code>eventos</code>, escrita por <code>sp_procesar_evento_iot</code> con los límites de la tabla <code>variables</code>. Tiene su propia escala de severidad y una fila por variable y tipo, por lo que sus números pueden diferir de los anteriores.</p>
+        <div class="tabla-marco">
+          <table>
+            <thead><tr><th>Último registro</th><th>Variable</th><th>Tipo</th><th class="num">Valor</th><th>Severidad</th><th>Estado</th><th class="num">Repeticiones</th></tr></thead>
+            <tbody id="tabla-eventos"></tbody>
+          </table>
+        </div>
+      </article>
+    </section>
+
+    <!-- HISTÓRICO -->
+    <section class="panel" id="panel-historico" role="tabpanel" hidden>
+      <div class="rejilla rejilla--2">
+        <article class="tarjeta">
+          <h3>Mapa de calor por hora y día</h3>
+          <div class="controles">
+            <label class="campo">Variable <select id="heatmap-variable"></select></label>
+          </div>
+          <div class="lienzo lienzo--alto" id="g-heatmap"></div>
+        </article>
+        <article class="tarjeta">
+          <h3>Histograma</h3>
+          <div class="controles">
+            <label class="campo">Variable <select id="histograma-variable"></select></label>
+            <span class="leyenda-simple"><i class="muestra muestra--neutra"></i>Dentro de límites <i class="muestra muestra--aviso"></i>⚠️ Fuera de límites</span>
+          </div>
+          <div class="lienzo lienzo--alto" id="g-histograma"></div>
+        </article>
+      </div>
+
+      <article class="tarjeta">
+        <h3>Auditoría de mediciones</h3>
+        <div class="tabla-marco">
+          <table>
+            <thead id="auditoria-cabecera"></thead>
+            <tbody id="tabla-auditoria"></tbody>
+          </table>
+        </div>
+        <div class="paginacion">
+          <button type="button" class="boton" id="pagina-anterior">← Anterior</button>
+          <span id="pagina-texto">—</span>
+          <button type="button" class="boton" id="pagina-siguiente">Siguiente →</button>
+        </div>
+      </article>
+    </section>
+
+    <!-- NODOS -->
+    <section class="panel" id="panel-nodos" role="tabpanel" hidden>
+      <article class="tarjeta">
+        <h3>Telemetría de nodos</h3>
+        <p class="nota" id="nota-telemetria"></p>
+        <div class="tabla-marco">
+          <table>
+            <thead><tr><th>Nodo</th><th>Referencia</th><th>Rol</th><th>Conexión</th><th>Último paquete</th><th class="num">Mensajes</th><th class="num">Lecturas</th></tr></thead>
+            <tbody id="tabla-telemetria"></tbody>
+          </table>
+        </div>
+      </article>
+      <div class="rejilla rejilla--nodos" id="tarjetas-nodos-detalle"></div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

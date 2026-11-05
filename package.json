@@ -1,0 +1,21 @@
+{
+  "name": "dashboard-acuicola",
+  "version": "1.0.0",
+  "description": "Dashboard de monitoreo IoT de calidad del agua en un estanque piscícola",
+  "main": "server.js",
+  "private": true,
+  "scripts": {
+    "start": "node server.js",
+    "build": "npm --prefix frontend install && npm --prefix frontend run build",
+    "dev": "npm --prefix frontend run dev",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "dotenv": "^16.6.1",
+    "express": "^4.22.3",
+    "pg": "^8.23.1"
+  }
+}

@@ -1,0 +1,290 @@
+@import "tailwindcss";
+@import "@fontsource-variable/inter/index.css";
+
+/* Tokens del sistema. Guía completa en DESIGN.md. */
+@theme static {
+  --font-sans: "Inter Variable", system-ui, sans-serif;
+
+  --color-hueso: #FAFAFA;
+  --color-superficie: #FFFFFF;
+  --color-suave: #F1F5F9;
+  --color-aviso: #0F172A;
+  --color-tinta: #0F172A;
+  --color-tinta-2: #475569;
+  --color-tinta-3: #64748B;
+  --color-borde: rgba(15, 23, 42, 0.06);
+  --color-borde-2: rgba(15, 23, 42, 0.14);
+
+  --color-cian: #22D3EE;
+  --color-azul: #3B82F6;
+  --color-violeta: #8B5CF6;
+  --color-lima: #A3E635;
+
+  /* Relleno semántico (iconos, arcos, bordes) y tinta semántica (texto AA). */
+  --color-normal: #16A34A;
+  --color-normal-tinta: #166534;
+  --color-normal-suave: #DCFCE7;
+  --color-advertencia: #F59E0B;
+  --color-advertencia-tinta: #92400E;
+  --color-advertencia-suave: #FEF3C7;
+  --color-critica: #E11D48;
+  --color-critica-tinta: #BE123C;
+  --color-critica-suave: #FFE4E6;
+  --color-sin-dato: #94A3B8;
+  --color-sin-dato-tinta: #475569;
+  --color-sin-dato-suave: #F1F5F9;
+
+  --color-nodo-1: #3B82F6;
+  --color-nodo-2: #EA5A3A;
+
+  --radius-2xl: 1rem;
+  --shadow-tarjeta: 0 1px 2px rgba(0, 0, 0, 0.04), 0 12px 32px -8px rgba(59, 130, 246, 0.12);
+  --shadow-alta: 0 1px 2px rgba(0, 0, 0, 0.05), 0 20px 44px -12px rgba(59, 130, 246, 0.2);
+  --shadow-vidrio: 0 1px 0 rgba(255, 255, 255, 0.6) inset, 0 8px 24px -8px rgba(15, 23, 42, 0.14);
+}
+
+:root {
+  color-scheme: light;
+  --degradado-marca: linear-gradient(100deg, #06B6D4, #3B82F6 55%, #8B5CF6);
+  --rayado: repeating-linear-gradient(135deg, #E2E8F0 0 6px, #F1F5F9 6px 12px);
+  --rayado-a: #F1F5F9;
+  --rayado-b: #CBD5E1;
+  --vidrio-fondo: rgba(255, 255, 255, 0.7);
+  --tooltip-fondo: rgba(255, 255, 255, 0.78);
+  --mesh-a: rgba(34, 211, 238, 0.06);
+  --mesh-b: rgba(59, 130, 246, 0.06);
+  --mesh-c: rgba(139, 92, 246, 0.05);
+  --esqueleto: #EEF2F6;
+  --esqueleto-brillo: rgba(255, 255, 255, 0.75);
+  --logro-fondo: rgba(163, 230, 53, 0.3);
+  --pecera-cielo: #F0F9FF;
+  --pecera-arena: #FDE68A;
+  /* Neutros de las gráficas: Lienzo los resuelve antes de pasarlos a ECharts. */
+  --grafica-linea: rgba(15, 23, 42, 0.07);
+  --grafica-eje: rgba(15, 23, 42, 0.18);
+  --grafica-sombra: rgba(15, 23, 42, 0.04);
+  --calor-1: #E0F2FE;
+  --calor-2: #7DD3FC;
+  --calor-3: #3B82F6;
+  --calor-4: #1E3A8A;
+}
+
+/* Modo oscuro: agua profunda, no negro puro. Los rellenos semánticos y los colores de
+   nodo no cambian; sí las tintas, para mantener el contraste AA sobre fondo oscuro. */
+:root[data-tema="oscuro"] {
+  color-scheme: dark;
+  --color-hueso: #0B1220;
+  --color-superficie: #131C2E;
+  --color-suave: #1E293B;
+  --color-aviso: #020617;
+  --color-tinta: #E8EEF6;
+  --color-tinta-2: #AEBBCD;
+  --color-tinta-3: #8E9DB2;
+  --color-borde: rgba(148, 163, 184, 0.14);
+  --color-borde-2: rgba(148, 163, 184, 0.3);
+  --color-normal-tinta: #4ADE80;
+  --color-normal-suave: #0F2E22;
+  --color-advertencia-tinta: #FCD34D;
+  --color-advertencia-suave: #33260D;
+  --color-critica-tinta: #FDA4AF;
+  --color-critica-suave: #3B1423;
+  --color-sin-dato-tinta: #CBD5E1;
+  --color-sin-dato-suave: #1E293B;
+  --shadow-tarjeta: 0 1px 2px rgba(0, 0, 0, 0.3), 0 12px 32px -8px rgba(0, 0, 0, 0.45);
+  --shadow-alta: 0 1px 2px rgba(0, 0, 0, 0.35), 0 20px 44px -12px rgba(0, 0, 0, 0.6);
+  --shadow-vidrio: 0 1px 0 rgba(255, 255, 255, 0.05) inset, 0 8px 24px -8px rgba(0, 0, 0, 0.5);
+  --rayado: repeating-linear-gradient(135deg, #2A3648 0 6px, #1E293B 6px 12px);
+  --rayado-a: #1E293B;
+  --rayado-b: #3B4A5F;
+  --vidrio-fondo: rgba(19, 28, 46, 0.72);
+  --tooltip-fondo: rgba(19, 28, 46, 0.88);
+  --mesh-a: rgba(34, 211, 238, 0.1);
+  --mesh-b: rgba(59, 130, 246, 0.12);
+  --mesh-c: rgba(139, 92, 246, 0.1);
+  --esqueleto: #1A2436;
+  --esqueleto-brillo: rgba(148, 163, 184, 0.12);
+  --logro-fondo: rgba(163, 230, 53, 0.12);
+  --pecera-cielo: #1A2B42;
+  --pecera-arena: #A78B4D;
+  --grafica-linea: rgba(148, 163, 184, 0.14);
+  --grafica-eje: rgba(148, 163, 184, 0.35);
+  --grafica-sombra: rgba(148, 163, 184, 0.1);
+  /* La rampa se invierte: en fondo oscuro, el valor alto es el más brillante. */
+  --calor-1: #15324D;
+  --calor-2: #1E5F92;
+  --calor-3: #38A3E8;
+  --calor-4: #BAE9FF;
+}
+
+html { scroll-behavior: smooth; scroll-padding-top: 8rem; }
+body {
+  margin: 0;
+  background: var(--color-hueso);
+  color: var(--color-tinta);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+}
+::selection { background: rgba(59, 130, 246, 0.2); }
+* { scrollbar-color: rgba(100, 116, 139, 0.45) transparent; scrollbar-width: thin; }
+:focus { outline: none; }
+.num { font-variant-numeric: tabular-nums; }
+button, select, input, a { touch-action: manipulation; }
+
+/* Superficies */
+.tarjeta {
+  background: var(--color-superficie);
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-tarjeta);
+}
+/* El vidrio solo va en lo que se superpone al contenido. */
+.vidrio {
+  background: var(--vidrio-fondo);
+  -webkit-backdrop-filter: blur(24px) saturate(1.4);
+  backdrop-filter: blur(24px) saturate(1.4);
+  box-shadow: var(--shadow-vidrio);
+}
+
+/* Fondo: agua en movimiento lento. Se anima con transform, nunca con repintado. */
+.mesh { position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; }
+.mesh i {
+  position: absolute;
+  width: 62vmax;
+  height: 62vmax;
+  border-radius: 50%;
+  will-change: transform;
+}
+.mesh i:nth-child(1) { top: -30vmax; left: -18vmax; background: radial-gradient(closest-side, var(--mesh-a), transparent); animation: deriva-a 38s ease-in-out infinite alternate; }
+.mesh i:nth-child(2) { top: 12vmax; right: -22vmax; background: radial-gradient(closest-side, var(--mesh-b), transparent); animation: deriva-b 46s ease-in-out infinite alternate; }
+.mesh i:nth-child(3) { bottom: -34vmax; left: 18vmax; background: radial-gradient(closest-side, var(--mesh-c), transparent); animation: deriva-a 54s ease-in-out infinite alternate-reverse; }
+@keyframes deriva-a { to { transform: translate3d(14vmax, 8vmax, 0) scale(1.15); } }
+@keyframes deriva-b { to { transform: translate3d(-12vmax, 10vmax, 0) scale(0.9); } }
+
+/* Hero */
+.hero { position: relative; overflow: hidden; border-left: 4px solid var(--tono); }
+.hero[data-tono="critica"] { --tono: var(--color-critica); background: linear-gradient(115deg, var(--color-critica-suave), var(--color-superficie) 62%); }
+.hero[data-tono="advertencia"] { --tono: var(--color-advertencia); background: linear-gradient(115deg, var(--color-advertencia-suave), var(--color-superficie) 62%); }
+.hero[data-tono="normal"] { --tono: var(--color-normal); background: linear-gradient(115deg, var(--color-normal-suave), var(--color-superficie) 62%); }
+.hero[data-tono="sin_dato"] { --tono: var(--color-sin-dato); background: linear-gradient(115deg, var(--color-sin-dato-suave), var(--color-superficie) 62%); }
+/* El brillo pulsa con opacidad sobre una capa propia. Solo con crítica en vivo. */
+.hero__pulso {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 40px;
+  background: linear-gradient(90deg, rgba(225, 29, 72, 0.32), transparent);
+  pointer-events: none;
+  animation: pulso 2s ease-in-out infinite;
+}
+@keyframes pulso { 0%, 100% { opacity: 0.25; } 50% { opacity: 1; } }
+
+/* Contador de refresco: un punto orbita la pista usando solo rotación. */
+.orbita { animation: orbitar var(--duracion, 10s) linear forwards; }
+@keyframes orbitar { to { transform: rotate(360deg); } }
+
+/* Datos desactualizados */
+.desaturado { filter: saturate(0.4); }
+.rayado { background-image: var(--rayado); }
+
+/* Gauges en carrusel en móvil */
+@media (max-width: 767px) {
+  .carrusel {
+    display: flex !important;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    gap: 12px;
+    margin-inline: -16px;
+    padding: 4px 16px 12px;
+  }
+  .carrusel > * { flex: 0 0 min(82%, 320px); scroll-snap-align: center; grid-column: auto !important; }
+}
+
+/* Resaltado al llegar desde un chip del hero */
+.resaltado::after {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border-radius: 1.15rem;
+  border: 2px solid var(--color-critica);
+  pointer-events: none;
+  animation: resalte 1.6s ease-out forwards;
+}
+@keyframes resalte { 0%, 40% { opacity: 1; } 100% { opacity: 0; } }
+
+/* Destello al llegar un dato nuevo */
+.destello { animation: destello 0.7s ease-out; }
+@keyframes destello { 0% { opacity: 0.35; transform: scale(0.96); } 100% { opacity: 1; transform: scale(1); } }
+.chispa { position: absolute; width: 4px; height: 4px; border-radius: 50%; background: var(--color-lima); pointer-events: none; animation: chispa 0.7s ease-out forwards; }
+@keyframes chispa { from { opacity: 1; transform: translate(0, 0) scale(1); } to { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(0.2); } }
+
+/* Esqueletos de carga */
+.esqueleto { position: relative; overflow: hidden; background: var(--esqueleto); border-radius: var(--radius-2xl); }
+.esqueleto::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(100deg, transparent 30%, var(--esqueleto-brillo) 50%, transparent 70%);
+  transform: translateX(-100%);
+  animation: brillo 1.4s ease-in-out infinite;
+}
+@keyframes brillo { to { transform: translateX(100%); } }
+
+/* Tooltip de ECharts */
+.tt { min-width: 190px; color: var(--color-tinta); font-size: 12px; line-height: 1.5; }
+.tt--entra { animation: tt-entra 0.14s ease-out; transform-origin: top left; }
+@keyframes tt-entra { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+.tt__hora { color: var(--color-tinta-2); margin-bottom: 4px; }
+.tt__fila + .tt__fila { margin-top: 6px; padding-top: 6px; border-top: 1px solid var(--color-borde-2); }
+.tt__valor { font-size: 15px; font-weight: 650; font-variant-numeric: tabular-nums; }
+.tt__marca { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; }
+
+/* Mascota */
+.pecera { display: block; width: 100%; height: auto; }
+.m-ola { animation: ola 7s linear infinite; }
+.m-ola--2 { animation-duration: 11s; animation-direction: reverse; }
+@keyframes ola { to { transform: translateX(-160px); } }
+.m-burbuja { animation: burbuja 4.5s ease-in infinite; }
+@keyframes burbuja { 0% { transform: translateY(0); opacity: 0; } 12% { opacity: 0.85; } 100% { transform: translateY(-110px); opacity: 0; } }
+.m-alga { transform-box: fill-box; transform-origin: 50% 100%; animation: alga 5s ease-in-out infinite alternate; }
+@keyframes alga { from { transform: rotate(-5deg); } to { transform: rotate(6deg); } }
+
+.m-pez { animation: nadar var(--vel, 15s) ease-in-out infinite; }
+@keyframes nadar {
+  0% { transform: translate(0, 0) scaleX(1); }
+  46% { transform: translate(112px, -10px) scaleX(1); }
+  50% { transform: translate(118px, -6px) scaleX(-1); }
+  96% { transform: translate(4px, 6px) scaleX(-1); }
+  100% { transform: translate(0, 0) scaleX(1); }
+}
+.m-cola { transform-box: fill-box; transform-origin: 100% 50%; animation: cola var(--cola, 0.5s) ease-in-out infinite alternate; }
+@keyframes cola { from { transform: rotate(-14deg); } to { transform: rotate(14deg); } }
+.m-boca { transform-box: fill-box; transform-origin: 50% 50%; animation: jadeo 0.9s ease-in-out infinite; }
+@keyframes jadeo { 0%, 100% { transform: scale(0.55); } 50% { transform: scale(1.1); } }
+.m-dormido { animation: flotar 5s ease-in-out infinite alternate; }
+@keyframes flotar { from { transform: translateY(0) rotate(-3deg); } to { transform: translateY(-5px) rotate(2deg); } }
+.m-zzz { animation: zzz 3.2s ease-in infinite; }
+.m-zzz:nth-child(2) { animation-delay: 0.9s; }
+.m-zzz:nth-child(3) { animation-delay: 1.8s; }
+@keyframes zzz { 0% { opacity: 0; transform: translate(0, 0); } 25% { opacity: 1; } 100% { opacity: 0; transform: translate(14px, -26px); } }
+.m-gota { animation: gota 1.8s ease-in infinite; }
+.m-gota:nth-of-type(2) { animation-delay: 0.7s; }
+@keyframes gota { 0% { opacity: 0; transform: translateY(0); } 25% { opacity: 1; } 100% { opacity: 0; transform: translateY(16px); } }
+.m-estatica { animation: estatica 0.32s steps(4) infinite; }
+@keyframes estatica { 25% { transform: translate(-12px, 7px); } 50% { transform: translate(9px, -5px); } 75% { transform: translate(-5px, -9px); } 100% { transform: translate(0, 0); } }
+
+/* Reglas del movimiento reducido: sin bucles, tilt, partículas ni confeti. */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-iteration-count: 1 !important;
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+  .mesh i, .hero__pulso, .chispa { display: none; }
+  .m-burbuja { opacity: 0; }
+}
+
+@media (forced-colors: active) {
+  :focus-visible { outline: 2px solid Highlight; outline-offset: 2px; }
+}
